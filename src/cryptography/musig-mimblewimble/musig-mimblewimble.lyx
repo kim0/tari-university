@@ -1,0 +1,1362 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Section
+Signature Aggregation 
+\end_layout
+
+\begin_layout Standard
+
+\bar under
+Notation 
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $x,x_{1,}x_{2...}$
+\end_inset
+
+are private keys with corresponding public keys 
+\begin_inset Formula $X,X_{1},X_{2}...$
+\end_inset
+
+ 
+\begin_inset Formula $X_{i}=x_{i}G$
+\end_inset
+
+, with 
+\begin_inset Formula $G$
+\end_inset
+
+ the generator
+\end_layout
+
+\begin_layout Itemize
+The message being signed is 
+\begin_inset Formula $m$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $H()$
+\end_inset
+
+ is a cryptographic hash function 
+\end_layout
+
+\begin_layout Standard
+
+\bar under
+Schnorr Signatures
+\bar default
+ 
+\end_layout
+
+\begin_layout Itemize
+Signatures are 
+\begin_inset Formula $(R,s)=(rG,r+H(X,R,m)x)$
+\end_inset
+
+ where 
+\begin_inset Formula $r$
+\end_inset
+
+is a random nonce chosen by the signer 
+\end_layout
+
+\begin_layout Itemize
+Verification requires 
+\begin_inset Formula $sG=R+H(X,R,m)X$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\bar under
+Naive Schnorr multi-signatures 
+\end_layout
+
+\begin_layout Itemize
+Call 
+\begin_inset Formula $X$
+\end_inset
+
+ the sum of the 
+\begin_inset Formula $X_{i}$
+\end_inset
+
+ points
+\end_layout
+
+\begin_layout Itemize
+Each signer chooses a random nonce 
+\begin_inset Formula $r_{i}$
+\end_inset
+
+ and shares 
+\begin_inset Formula $R_{i}=r_{i}G$
+\end_inset
+
+ with the other signers 
+\end_layout
+
+\begin_layout Itemize
+Call 
+\begin_inset Formula $R$
+\end_inset
+
+ the sum of the 
+\begin_inset Formula $R_{i}$
+\end_inset
+
+ points
+\end_layout
+
+\begin_layout Itemize
+Each signer computes 
+\begin_inset Formula $s_{i}=r_{i}+H(X,R,m)x_{i}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+The final signature is 
+\begin_inset Formula $(R,s)$
+\end_inset
+
+ where 
+\begin_inset Formula $s$
+\end_inset
+
+ is the sum of the 
+\begin_inset Formula $s_{i}$
+\end_inset
+
+values 
+\end_layout
+
+\begin_layout Itemize
+Verification requires 
+\begin_inset Formula $sG=R+H(X,R,m)X$
+\end_inset
+
+, where 
+\begin_inset Formula $X$
+\end_inset
+
+ is the sum of the individual public keys
+\end_layout
+
+\begin_layout Standard
+It is interesting to note that this satisfies the definition of a 
+\emph on
+key aggregation scheme
+\emph default
+, as multiple parties can jointly produce a signature that is a valid single-key
+ signature for the sum of the keys.
+
+\emph on
+ 
+\end_layout
+
+\begin_layout Standard
+The issue arises in that this scheme is not secure.
+ Consider the following scenario:
+\end_layout
+
+\begin_layout Itemize
+Alice and Bob want to produce a multi-signature together.
+\end_layout
+
+\begin_layout Itemize
+Alice has a key pair 
+\begin_inset Formula $(x_{A},X_{A})$
+\end_inset
+
+ and Bob has 
+\begin_inset Formula $(x_{B,}X_{B}).$
+\end_inset
+
+ However, nothing prevents Bob from claiming that his public key is 
+\begin_inset Formula $X_{B}'=X_{B}-X_{A}.$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Itemize
+If he does so, others will assume that 
+\begin_inset Formula $X_{A}+X_{B}'$
+\end_inset
+
+is the aggregated key that Alice and Bob need to cooperate in order to sign
+ for 
+\end_layout
+
+\begin_layout Itemize
+Unfortunately, that is equal to 
+\begin_inset Formula $X_{B}$
+\end_inset
+
+, thus Bob can clearly sign for this by himself 
+\end_layout
+
+\begin_layout Itemize
+This is called a rogue-key attack 
+\end_layout
+
+\begin_layout Itemize
+One way to avoid this is requiring that Alice and Bob prove first that they
+ actually possess the private keys corresponding to their claimed public
+ keys; however this is not always possible
+\end_layout
+
+\begin_layout Itemize
+Ideally a scheme needs to be constructed whose security does not rely on
+ out-of-band verification of the keys.
+\end_layout
+
+\begin_layout Section
+Simple Schnorr Multi-Signatures 
+\end_layout
+
+\begin_layout Standard
+Here we consider a new Schnorr-based multi-signature scheme called MuSig,
+ which is provably secure in the 
+\emph on
+plain public-model.
+ 
+\emph default
+This means that signers are only required to have a public key, but they
+ do not have to prove knowledge of the private key corresponding to their
+ public key to some certification authority or to other signers prior to
+ engaging the protocol.
+ 
+\end_layout
+
+\begin_layout Standard
+This new scheme provides improvements to Bellare and Neven 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Bellare2006"
+literal "false"
+
+\end_inset
+
+ and its variants by Bagherzandi 
+\emph on
+et al.
+ 
+\emph default
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Bagherzandi2008"
+literal "false"
+
+\end_inset
+
+ and Ma 
+\emph on
+et al.
+ 
+\emph default
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Ma2010"
+literal "false"
+
+\end_inset
+
+
+\emph on
+ 
+\emph default
+in two respects: 
+\end_layout
+
+\begin_layout Enumerate
+It is simple and efficient, as it has the same key and signature size as
+ standard Schnorr signatures; 
+\end_layout
+
+\begin_layout Enumerate
+It allows 
+\emph on
+key aggregation
+\emph default
+, where the joint signature can be verified just as a standard Schnorr signature
+ with respect to a single 
+\begin_inset Quotes eld
+\end_inset
+
+aggregated
+\begin_inset Quotes erd
+\end_inset
+
+ public key which can be computed from the individual public keys of the
+ signers.
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Maxwell2018"
+literal "false"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+The Discrete Logarithm Problem 
+\end_layout
+
+\begin_layout Standard
+Definition 1 (DL problem)
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Maxwell2018"
+literal "false"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Let 
+\begin_inset Formula $\mathbb{G}$
+\end_inset
+
+ 
+\begin_inset Formula $,p,g$
+\end_inset
+
+ be group parameters- it is fixed, but the bit length 
+\begin_inset Formula $k$
+\end_inset
+
+ and 
+\begin_inset Formula $p$
+\end_inset
+
+can be regarded as a security parameter if necessary.
+ 
+\end_layout
+
+\begin_layout Itemize
+An algorithm 
+\begin_inset Formula $\mathcal{A}$
+\end_inset
+
+ is said to 
+\begin_inset Formula $(t,\varepsilon solve$
+\end_inset
+
+the DL problem with with respect to 
+\begin_inset Formula $\mathbb{G},p,g$
+\end_inset
+
+ if on input a random group element 
+\begin_inset Formula $X$
+\end_inset
+
+, it runs in time at most 
+\begin_inset Formula $t$
+\end_inset
+
+ and returns 
+\begin_inset Formula $x\in\{0,...,p-1\}$
+\end_inset
+
+ such that 
+\end_layout
+
+\begin_layout Section
+Elliptic Curve Digital Signature Algorithm 
+\end_layout
+
+\begin_layout Standard
+Currently in Bitcoin ECDSA is implemented.
+ To sign a message 
+\begin_inset Formula $m$
+\end_inset
+
+ we hash it and treat this hash as a number: 
+\begin_inset Formula $z=hash(m)$
+\end_inset
+
+.
+ We also need a random or random-looking number 
+\begin_inset Formula $k$
+\end_inset
+
+.
+ We prefer not to trust random number generators (too many failures and
+ vulnerabilities are related to bad random number generators) so we usually
+ use 
+\bar under
+RFC6979
+\bar default
+ to calculate deterministic 
+\begin_inset Formula $k$
+\end_inset
+
+ based on our secret and the message we are signing.
+ 
+\end_layout
+
+\begin_layout Standard
+Using a private key 
+\begin_inset Formula $pk$
+\end_inset
+
+ we can generate a signature for message 
+\begin_inset Formula $m$
+\end_inset
+
+ consisting of two numbers: 
+\begin_inset Formula $r$
+\end_inset
+
+(
+\begin_inset Formula $x$
+\end_inset
+
+coordinate of the random point 
+\begin_inset Formula $R=kG$
+\end_inset
+
+ and 
+\begin_inset Formula $s=(z+rpk)/k$
+\end_inset
+
+.
+ Then, using our public key 
+\begin_inset Formula $P=pkG$
+\end_inset
+
+ anyone can verify our signature by checking that point 
+\begin_inset Formula $(\frac{z}{s})G+(\frac{r}{s})P$
+\end_inset
+
+ has 
+\begin_inset Formula $x$
+\end_inset
+
+coordinate equal to 
+\begin_inset Formula $r$
+\end_inset
+
+.
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename visualisationoftheECDSAalgorithm.png
+	width 10cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Visualization of the ECDSA algorithm.
+ Elliptic curve is plotted over real number for illustrative purposes 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This algorithm is very common, however it can be improved.
+ Firstly, signature verification includes inversion 
+\begin_inset Formula $(1/s)$
+\end_inset
+
+ and two points multiplications an these operations are very computationally
+ heavy.
+ In Bitcoin every node has to verify all the transactions.
+ This means that when you broadcast a transaction, thousands of computers
+ will have to verify your signature.
+ Making verification process simpler will be very beneficial even if signing
+ is more difficult.
+ 
+\end_layout
+
+\begin_layout Standard
+Secondly, every node has to verify every signature individually.
+ In the case of m-of-n multisig transaction node may even have to verify
+ the same signature several times.
+ For example, transaction of 7-of-11 multisig input will contain 7 signatures
+ and require from 7 to 11 signature verifications on every node in the network.
+ Also such transaction will take a huge amount of space in the block and
+ you will have to pay large fees for that.
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Stepan2018a"
+literal "false"
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Section
+Schnorr signatures 
+\end_layout
+
+\begin_layout Standard
+Schnorr signatures are generated slightly differently.
+ Instead of two scalars 
+\begin_inset Formula $(r,s)$
+\end_inset
+
+ we use a point 
+\begin_inset Formula $R$
+\end_inset
+
+ and a scalar .
+ Like ECDSA, 
+\begin_inset Formula $R$
+\end_inset
+
+ is considered a random point on the elliptic curve 
+\begin_inset Formula $(R=kG)$
+\end_inset
+
+.
+ Second part of the signature is calculated slightly differently: 
+\begin_inset Formula $s=k+hash(P,R,m)pk$
+\end_inset
+
+.
+ Here 
+\begin_inset Formula $pk$
+\end_inset
+
+ is your private key, 
+\begin_inset Formula $P=pkG$
+\end_inset
+
+ is your public key, 
+\begin_inset Formula $m$
+\end_inset
+
+ is the message.
+ Then once can verify this signature by checking that 
+\begin_inset Formula $sG=R+hash(P,R,m)P$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename VisualisationoftheSchnorrsignatureverification.png
+	width 10cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Visualisation of the Schnorr signature verification 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This equation is linear, so equations can be added and subtracted with each
+ other and still stay valid.
+ This leads to a nice feature of Schnorr signatures.
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Stepan2018a"
+literal "false"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Batch validation 
+\end_layout
+
+\begin_layout Standard
+To verify a block in Bitcoin blockchain we need to make sure that all signatures
+ in the block are valid.
+ If one of them is not valid we don't care which one- we just reject eh
+ whole block and that's it.
+ 
+\end_layout
+
+\begin_layout Standard
+With ECDSA every signature has to be verified separately.
+ Meaning that if we have 1000 signatures in the block we will need to compute
+ 1000 inversions and 2000 point multiplication.
+ In total approximately 3000 heavy operations.
+\end_layout
+
+\begin_layout Standard
+With Schnorr signatures we can add up all the signature verification equations
+ and save some computational power.
+ In total for a block with 1000 transactions we need to verify that:
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+\begin_inset Formula $(s1+s2+...+s1000)G=(R1+...+R1000)+(hash(P1,R1,m1)P1+hash(P2,R2,m2)P2+...+hash(P1000,R1000,m1000)P1000$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Here we have a bunch of point additions (almost free in sense of computational
+ power) and 1001 point multiplication.
+ This is already a factor of 3 improvement- we meed to compute roughly one
+ heavy operation per signature.
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Stepan2018a"
+literal "false"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename Batchvalidation.png
+	width 10cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Batch validation of two signatures.
+ As verification equation is linear the sum of several equations is valid
+ as soon as all signatures are valid.
+ We save some computational power as scalar and point additions are much
+ easier than point multiplication.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Key aggregation 
+\end_layout
+
+\begin_layout Standard
+There is a need to keep one's bitcoin safe, so we might want to use at least
+ two different private keys to control bitcoins.
+ Once we will use on a laptop or a phone and another one- on a hardware
+ wallet/cold wallet.
+ So when one of them is compromised we still have control over our bitcoins.
+ 
+\end_layout
+
+\begin_layout Standard
+Currently it is implemented via 2-of-2 multi-signature script.
+ This requires two separate signatures to be included in the transaction.
+\end_layout
+
+\begin_layout Standard
+With Schnorr signatures we can use a pair of private keys 
+\begin_inset Formula $(pk1,pk2)$
+\end_inset
+
+ and generate a shared signature corresponding to a shared public key 
+\begin_inset Formula $P=P1+P2=pk1G+pk2G$
+\end_inset
+
+.
+ To generate this signature we need to choose a random number on every device
+ 
+\begin_inset Formula $(k1,k2)$
+\end_inset
+
+, generate a random point 
+\begin_inset Formula $Ri=kiG$
+\end_inset
+
+, add them up to calculate a common 
+\begin_inset Formula $hash(P,R1+R2,m)$
+\end_inset
+
+ and then get 
+\begin_inset Formula $s1$
+\end_inset
+
+ and 
+\begin_inset Formula $s2$
+\end_inset
+
+ from every device 
+\begin_inset Formula $(si=ki+hash(P,R,m)pki)$
+\end_inset
+
+.
+ Then we can add up these signatures and use a pair 
+\begin_inset Formula $(R,s)=(R1+R2,s1+s2)$
+\end_inset
+
+ as our signature for shared public key 
+\begin_inset Formula $P.$
+\end_inset
+
+ Everyone else won't be able to say if it is an aggregated signature or
+ not, it looks exactly the same as a normal Schnorr signature.
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Stepan2018a"
+literal "false"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+There are three problems with this construction.
+ First one, from UI point of view.
+ To make a transaction we need several communication rounds, to calculate
+ common 
+\begin_inset Formula $R$
+\end_inset
+
+, and then to sign.
+ With two private keys it can be done with a single access to cold wallet:
+ we prepare an unsigned transaction.
+ Then we transfer this data to the cold wallet and sign.
+ As we already have R1 wa can sign transaction on the cold wallet in one
+ run.
+ From the cold wallet we get R2 and s2 which previously chosen (k1, R1),
+ combines both signatures and broadcasts a signed transaction.
+ This is pretty much similar to what we have now, but as soon as you add
+ a third provate key everything becomes more complicated.
+ Imagine 
+\end_layout
+
+\begin_layout Subsection
+Merkle multi-signatures
+\end_layout
+
+\begin_layout Standard
+MuSig and key aggregation require all signers to sign a transaction.
+ What happens if you want to make a 2-of-3 multisig? Can one use signature
+ aggregation or will we have to use our usual OP_CHECKMULTISIG and separate
+ signatures?
+\end_layout
+
+\begin_layout Standard
+it is possible, but with a small change in the protocol.
+ A new op-code similar to OP_CHECKMULTISIG can be developed that checks
+ if aggregated signature corresponds to a particular item in the Merkle
+ tree of public keys.
+ 
+\end_layout
+
+\begin_layout Standard
+For example, if we use a 2-of-3 multisig with public keys 
+\begin_inset Formula $P1$
+\end_inset
+
+, 
+\begin_inset Formula $P2$
+\end_inset
+
+ and 
+\begin_inset Formula $P3$
+\end_inset
+
+, then we need to construct a Merkle tree of aggregated public keys for
+ all combinations we can use: 
+\begin_inset Formula $(P1,P2)$
+\end_inset
+
+, 
+\begin_inset Formula $(P2,P3)$
+\end_inset
+
+, 
+\begin_inset Formula $(P1,P3)$
+\end_inset
+
+ and put the root in the locking script.
+ To spend bitcoins we provide a signature and a proof that our public keys
+ is in the tree.
+ For 2-of-3 multisig there are only 3 elements in the tree and the proof
+ will consist fo two hashes-the one we want to use and its neighbor.
+ For a 7-of-11 multisig there will be already 11!/7!/4!=300 possible key
+ combinations and the proof will require 8 elements.
+ In general the number of elements in the proof scales almost linear with
+ the number of keys in multisig (its 
+\begin_inset Formula $log2(n!m!/(n-m)!).$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+But with the Merkle tree of public keys we are not limited to 
+\emph on
+
+\begin_inset Formula $m-of-n$
+\end_inset
+
+
+\emph default
+ multi-signatures.
+ We can make a tree with any public keys we want.
+ For example , if we have a laptop, a phone, a hardware wallet and a recovery
+ seed, we can construct a structure that would allow us to spend bitcoins
+ with a laptop and a hardware wallet, a phone and a hardware wallet or just
+ with a recovery seed.
+ This is currently not possible just with OP_CHECKMULTISIG- only if you
+ construct much more complicated script with branches.
+\end_layout
+
+\begin_layout Section
+Boneh-Lynn-Shacham Signatures 
+\end_layout
+
+\begin_layout Standard
+Boneh-Lynn-Shacham signature scheme is based on the computational Diffie-Hellman
+ assumption on certain and hyper-elliptic curves.
+ The signature length is half the size of a DSA signature for a similar
+ level of security.
+ 
+\end_layout
+
+\begin_layout Standard
+Schnorr signatures combine all signatures and public keys in the transaction
+ into a single key and a signature and nobody will find out that they correspond
+ to multiple keys.
+ In addition block validation is faster, as all signatures can be validated
+ at once.
+ However there are a few problems with Schnorr signatures:
+\end_layout
+
+\begin_layout Itemize
+Multisig schemes require several rounds of communication.
+ This can be a hindrance with regards to cold storage
+\end_layout
+
+\begin_layout Itemize
+With signature aggregation we have to rely on random number generator-we
+ can't choose random point 
+\begin_inset Formula $R$
+\end_inset
+
+ deterministically like we do in ECDSA
+\end_layout
+
+\begin_layout Itemize
+m-of-n multisig scheme is tricky- we need to make a merkle tree of public
+ keys that can get pretty large for large m of n 
+\end_layout
+
+\begin_layout Itemize
+We can't combine all signatures in the block to a single signature 
+\end_layout
+
+\begin_layout Standard
+BLS signatures can fix all of the above.
+ We don't need random numbers at all, all signatures in the block can be
+ combined to a single signature, m-of-n multisig is very simple and we don't
+ need several communication rounds between signers.
+ In addition to that BLS signatures are 2 times shorter than Schnorr or
+ ECDSA- signature is not a pair, but a single curve point.
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Stepan2018"
+literal "false"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Hashing to the curve
+\end_layout
+
+\begin_layout Standard
+Normally with ECDSA and Schnorr we hash the message and use this hash in
+ the signing algorithm as a number.
+ For BLS signatures we need a slightly modified hashing algorithm that hashes
+ directly to the elliptic curve.
+ The easiest way is to hash a message as usual and treat the result as an
+ 
+\begin_inset Formula $x$
+\end_inset
+
+-coordinate of a point.
+ Elliptic curves usually have about 
+\begin_inset Formula $2^{256}$
+\end_inset
+
+ points and SHA-256 hashing algorithm also gives a 256-bit result.
+ But for every valid 
+\begin_inset Formula $x$
+\end_inset
+
+-coordinate there are two points with positive and negative 
+\begin_inset Formula $y$
+\end_inset
+
+-coordinate (just because if 
+\begin_inset Formula $(x,y)$
+\end_inset
+
+ is on the curve 
+\begin_inset Formula $y^{2}=x^{3}+ax+b$
+\end_inset
+
+ then 
+\begin_inset Formula $(x,-y)$
+\end_inset
+
+ is also on the curve).
+ This means that our hash has roughly 50% probability to find two points
+ for some 
+\begin_inset Formula $x$
+\end_inset
+
+and 50% to find none.
+ 
+\end_layout
+
+\begin_layout Standard
+To find a point for any message we can try hashing several times by appending
+ a number to the hash and incrementing it on fail.
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Stepan2018"
+literal "false"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Key aggregation and 
+\begin_inset Formula $n-of-n$
+\end_inset
+
+multisignature
+\end_layout
+
+\begin_layout Standard
+If we are using multisignature addresses, we are signing the same transaction
+ with different keys.
+ In this case, we can do key aggregation like in Schnorr, where we combine
+ all signatures and all keys to a single pair of a key and a signature.
+ If we consider a common 3-of-3 multisig scheme:
+\end_layout
+
+\begin_layout Standard
+A simple way to combine them is to add all the signatures and all the keys
+ together.
+ The result will be a signature 
+\begin_inset Formula $S=S1+S2+S3$
+\end_inset
+
+ and a key 
+\begin_inset Formula $P=P1+P2+P3$
+\end_inset
+
+.
+ It is easy to see that the same verification equation still works:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $e(G,S)=e(P,H(m))$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $e((G,S)=e(G,S1+S2+S3)=e(G,(pk1+pk2+pk3)H(m))=e((pk1+pk2+pk3)GH((m))=e(P1+P2+P3,H(m))=e(P,H(m))$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Similarly to Schnorr there needs to be protection against rogue key attacks.
+ This can be achieved by asking every co-signer to prove that they have
+ private keys for their public keys (by signing their public keys), or that
+ some nonlinearity to the scheme is added making rogue key attacks impossible.
+ Instead of summing up all the keys and signatures, we multiply them by
+ a certain number and then add:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $S=a1S1+a2S2+aS3$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $P=a1P1+a2P2+a3P3$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Here coefficients of the signatures and keys are calculated deterministically
+ from the public key of the signer and all other public keys:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $ai=hash(Pi,\{P1,P2,P3\})$
+\end_inset
+
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Stepan2018"
+literal "false"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+The benefits of key aggregation 
+\end_layout
+
+\begin_layout Itemize
+If a group of 
+\begin_inset Formula $n$
+\end_inset
+
+signers want to authorize which all of them agree, but do not necessarily
+ wish to reveal their individual public keys 
+\end_layout
+
+\begin_layout Itemize
+They can privately compute the aggregated key 
+\begin_inset Formula $\tilde{X}$
+\end_inset
+
+ corresponding to their multi-set of public keys and publish it as an ordinary
+ (non-aggregated) key.
+ 
+\end_layout
+
+\begin_layout Itemize
+Signers are ensured that all of them will need to cooperate to produce a
+ signature which is valid under 
+\begin_inset Formula $\tilde{X}$
+\end_inset
+
+, whereas verifiers will not even learn that 
+\begin_inset Formula $\tilde{X}$
+\end_inset
+
+is in fact an aggregated key.
+ 
+\end_layout
+
+\begin_layout Itemize
+Moreover, 
+\begin_inset Formula $\tilde{X}$
+\end_inset
+
+can be computed by a third party just from the list of public keys, without
+ interacting with the signers.
+\end_layout
+
+\begin_layout Itemize
+This property will prove instrumental for obtaining a more compact and privacy-p
+reserving variant of so-called 
+\emph on
+n-
+\emph default
+of-
+\emph on
+n 
+\emph default
+multi-signature transactions in Bitcoin.
+ 
+\end_layout
+
+\begin_layout Standard
+Two variants of the BN multi-signature scheme have been previously proposed.
+\end_layout
+
+\begin_layout Standard
+Today Bitcoin uses ECDSA signatures 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "ANSI1999"
+literal "false"
+
+\end_inset
+
+ over the 
+\begin_inset Formula $\mathsf{secp256k1}$
+\end_inset
+
+ curve 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Brown2010"
+literal "false"
+
+\end_inset
+
+ to authenticate transactions.
+ As Bitcoin nodes fully verify all transactions, signature size and verification
+ time are important design considerations while signing time is much less
+ so.
+ Besides, signatures account for a large part of the size of Bitcoin transaction
+s.
+ Because of this, using multi-signatures seems appealing.
+ However, designing multiparty ECDSA signature schemes is notably cumbersome
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Micali2001"
+literal "false"
+
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Gennaro2016"
+literal "false"
+
+\end_inset
+
+
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Lindell2017"
+literal "false"
+
+\end_inset
+
+due to the modular inversion involved in signing, and moving to Schnorr
+ signatures would definitely help deploy compact multi-signatures.
+\end_layout
+
+\begin_layout Subsection
+Introduction 
+\end_layout
+
+\begin_layout Standard
+Bitcoin contains every transaction since the system's inception, resulting
+ in a final state, the set of unspent coins.
+ Each unspent coin has an associated value (expressed as a multiple of the
+ currency unit, 
+\begin_inset Formula $10^{-8}$
+\end_inset
+
+ bitcoin) and a programmable public key of the owner.
+ Every transaction consumes one or more coins, providing a signature for
+ each to authorize its spending, and creates one more new coins, with a
+ total value not larger than the value of the consumed coins.
+ 
+\end_layout
+
+\begin_layout Standard
+Bitcoins uses a programmable generalization of a digital signature scheme.
+ Instead of a public key, a predicate that determines spend-ability is included
+ in every output (implemented in a concise programming language, called
+ 
+\emph on
+Bitcoin Script).
+ 
+\emph default
+When spending, instead of a signature, a witness that satisfies the predicate
+ is provided.
+ In practice, most output predicates effectively correspond to a single
+ ECDSA verification.
+ This is also how Bitcoin supports a naive version of multi-signatures with
+ a threshold policy: coins can be assigned a predicate that requires valid
+ signatures for multiple public keys.
+ Several use cases for the exist, including low-trust escrow services 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Goldfeder2017"
+literal "false"
+
+\end_inset
+
+ and split-device security.
+ While using the predicate language to implement multi-signatures is very
+ flexible, it is inefficient in terms of size, computational cost, and privacy.
+ 
+\end_layout
+
+\begin_layout Standard
+As a global consensus system, kept in check by the ability for every participant
+ to validate all updates to the ledger, the size of signatures and predicates,
+ and the computational cost for verifying them are the primary limiting
+ factors for its scalability.
+ The computational requirements for signing, or the communication overhead
+ between different signers are far less constrained.
+ Bitcoin does not have any central trusted party, so it is not generally
+ possible to introduce new cryptographic schemes that require a trusted
+ setup.
+ Finally, to function as a currency, a high degree of fungibility and privacy
+ is desirable.
+ Among other things, this means that ideally the predicate of coins fo not
+ lead information about the owner.
+ In particular, if several styles of predicates are in use, the choice may
+ reveal what software or service is being used to manage it.
+ 
+\end_layout
+
+\end_body
+\end_document
